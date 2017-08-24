@@ -4,3 +4,6 @@ pkg
 vendor
 install
 .bundle
+npm-debug.log
+
+tmp_build/

@@ -1,18 +1,20 @@
 require 'cocoapods-core'
-require 'FileUtils'
+require 'project_creator'
 
 module CocoaPodsCordovaPlugins
     class << self
-        include FileUtils
-
         Pod::HooksManager.register('cocoapods-cordova-plugins', :pre_install) do |context, options|
-            puts 'Inspecting context.podfile'
-            puts '--------------------------'
-            puts context.podfile.inspect
-            puts '--------------------------'
-            puts options.inspect
-            puts 'Inspecting options'
-            puts '--------------------------'
+            CocoaPodsCordovaPlugins.on_pre_install(context.podfile, options)
+        end
+
+        def on_pre_install(podfile, options)
+            project_creator = CocoaPodsCordovaPlugins::ProjectCreator.new(options)
+
+            unless project_creator.isCordovaInstalled
+                raise Pod::Informative, 'Cordova is missing on the machine. Please install cordova via `npm i -g cordova`'
+            end
+
+            project_creator.create
         end
 
     end

@@ -1,37 +1,31 @@
-require 'fileutils'
+require 'fs_helper'
 
 module CocoaPodsCordovaPlugins
     class ProjectCreator
-        def initialize(config)
+        def initialize(config, project_dir)
             raise ArgumentError, 'Missing config' unless config
             raise ArgumentError, 'Missing plugins declaration' unless config[:plugins]
+            raise ArgumentError, 'Missing project dir' unless project_dir
 
             @config = config
-        end
+            @project_dir = project_dir
 
-        def isCordovaInstalled
-            return Kernel.system('cordova', '--version')
+            @fs_helper = CocoaPodsCordovaPlugins::FSHelper
         end
 
         def create
-            recreate_temp_dir
-
-            FileUtils.chdir('./tmp_build')
+            @fs_helper.recreate_dir(@project_dir)
+            @fs_helper.cd(@project_dir)
 
             create_cordova_project
             add_ios_platform
             add_plugins
             prepare_cordova_project
 
-            FileUtils.chdir('..')
+            @fs_helper.cd('..')
         end
 
         private
-        def recreate_temp_dir
-            FileUtils.rm_r('./tmp_build', :force => true)
-            FileUtils.mkpath('./tmp_build')
-        end
-
         def create_cordova_project
             Kernel.system('cordova', 'create', '.')
         end

@@ -13,6 +13,11 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+# Because fakefs collides with pp, need to make sure that it was required before fakefs
+# More here: https://github.com/fakefs/fakefs#fakefs-----typeerror-superclass-mismatch-for-class-file
+require 'pp'
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

@@ -14,19 +14,7 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         FakeFS.deactivate!
     end
 
-    context 'cd' do
-        before(:each) do
-            allow(FileUtils).to receive_messages(:chdir => nil)
-        end
-
-        it 'should cd to specified directory' do
-            expect(FileUtils).to receive(:chdir).with('dir')
-
-            CocoaPodsCordovaPlugins::FSHelper.cd('dir')
-        end
-    end
-
-    context 'recreate_dir' do
+    context '#recreate_dir' do
         it 'should create dir by passed path if it does not exist' do
             CocoaPodsCordovaPlugins::FSHelper.recreate_dir('dir')
 
@@ -40,8 +28,11 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
 
         it 'should purge files from dir by passed path' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.touch('dir/file.txt')
+            mk_dir_tree({
+                'dir': {
+                    'file.txt': ''
+                }
+            })
 
             CocoaPodsCordovaPlugins::FSHelper.recreate_dir('dir')
 
@@ -49,8 +40,11 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
 
         it 'should purge subdirs from dir passed by path' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.mkdir_p('dir/subdir')
+            mk_dir_tree({
+                'dir': {
+                    'dir/subdir': {}
+                }
+            })
 
             CocoaPodsCordovaPlugins::FSHelper.recreate_dir('dir')
 
@@ -58,11 +52,14 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
     end
 
-    context 'list_dirs' do
+    context '#list_dirs' do
         it 'should return list of subdirs located in passed dir' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.mkdir_p('dir/subdir')
-            FileUtils.mkdir_p('dir/another_subdir')
+            mk_dir_tree({
+                'dir': {
+                    'subdir': {},
+                    'another_subdir': {}
+                }
+            })
 
             list = CocoaPodsCordovaPlugins::FSHelper.list_dirs('dir')
 
@@ -73,18 +70,22 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
 
         it 'should not include files in list' do
-            FakeFS do
-                FileUtils.mkdir_p('dir')
-                FileUtils.touch('dir/file.txt')
+            mk_dir_tree({
+                'dir': {
+                    'file.txt': ''
+                }
+            })
 
-                list = CocoaPodsCordovaPlugins::FSHelper.list_dirs('dir')
+            list = CocoaPodsCordovaPlugins::FSHelper.list_dirs('dir')
 
-                expect(list.count).to eq(0)
-            end
+            expect(list.count).to eq(0)
+
         end
 
         it 'should not include . and .. paths to the list' do
-            FileUtils.mkdir_p('dir')
+            mk_dir_tree({
+                'dir': {}
+            })
 
             list = CocoaPodsCordovaPlugins::FSHelper.list_dirs('dir')
 
@@ -92,11 +93,14 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
     end
 
-    context 'list_files' do
+    context '#list_files' do
         it 'should list all files in passed dir matching passed regex' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.touch('dir/file.txt')
-            FileUtils.touch('dir/another_file.txt')
+            mk_dir_tree({
+                'dir': {
+                    'file.txt': '',
+                    'another_file.txt': ''
+                }
+            })
 
             list = CocoaPodsCordovaPlugins::FSHelper.list_files('dir', /.txt$/)
 
@@ -107,8 +111,11 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
 
         it 'should not add to list files not matching passed regex' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.touch('dir/file.h')
+            mk_dir_tree({
+                'dir': {
+                    'file.h': ''
+                }
+            })
 
             list = CocoaPodsCordovaPlugins::FSHelper.list_files('dir', /.txt$/)
 
@@ -116,8 +123,11 @@ RSpec.describe CocoaPodsCordovaPlugins::FSHelper do
         end
 
         it 'should not add directories to resulting list' do
-            FileUtils.mkdir_p('dir')
-            FileUtils.mkdir_p('dir/subdir')
+            mk_dir_tree({
+                'dir': {
+                    'subdir': {}
+                }
+            })
 
             list = CocoaPodsCordovaPlugins::FSHelper.list_files('dir', /.txt$/)
 

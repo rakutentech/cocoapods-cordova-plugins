@@ -1,31 +1,83 @@
 require 'cordova_project/cordova_project'
+require 'fakefs'
+require 'fileutils'
 
 RSpec.describe CocoaPodsCordovaPlugins::CordovaProject do
-    before(:each) do
-        allow(Kernel).to receive(:system)
+    context '#podfile_path' do
+        it 'should return path to podfile' do
+            project = CocoaPodsCordovaPlugins::CordovaProject.new('/cordova_project_dir')
+
+            path = project.podfile_path
+
+            expect(path).to eq('/cordova_project_dir/platforms/ios/Podfile')
+        end
     end
 
-    context '#isCordovaInstalled' do
-        it 'should check is cordova exist by asking version of the installed cordova' do
-            expect(Kernel).to receive(:system).with('cordova', '--version')
-
-            CocoaPodsCordovaPlugins::CordovaProject.new({:plugins => []}, 'default_dir').isCordovaInstalled
+    context '#list_native_sources' do
+        before(:all) do
+            FakeFS.activate!
         end
 
-        it 'should return true if cordova installed on machine' do
-            allow(Kernel).to receive(:system) { true }
-
-            creator = CocoaPodsCordovaPlugins::CordovaProject.new({:plugins => []}, 'default_dir')
-
-            expect(creator.isCordovaInstalled).to eq true
+        before(:each) do
+            FakeFS.clear!
         end
 
-        it 'should return nil if cordova is not installed on machine' do
-            allow(Kernel).to receive(:system) { nil }
+        after(:all) do
+            FakeFS.deactivate!
+        end
 
-            creator = CocoaPodsCordovaPlugins::CordovaProject.new({:plugins => []}, 'default_dir')
+        it 'should include .h files of cordova plugins' do
+            mk_dir_tree({
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin': { 'header_file.h': '' },
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin': { 'another_header_file.h': '' }
+            })
 
-            expect(creator.isCordovaInstalled).to eq nil
+            project = CocoaPodsCordovaPlugins::CordovaProject.new('/cordova_project_dir')
+            plugin_sources = project.list_native_sources
+
+            aggregate_failures 'resulting dirs list' do
+                expect(plugin_sources.count).to eq(2)
+                expect(plugin_sources).to include(
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin/header_file.h',
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin/another_header_file.h'
+                )
+            end
+        end
+
+        it 'should include .m files of cordova plugins' do
+            mk_dir_tree({
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin': { 'header_file.m': '' },
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin': { 'another_header_file.m': '' }
+            })
+
+            project = CocoaPodsCordovaPlugins::CordovaProject.new('/cordova_project_dir')
+            plugin_sources = project.list_native_sources
+
+            aggregate_failures 'resulting dirs list' do
+                expect(plugin_sources.count).to eq(2)
+                expect(plugin_sources).to include(
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin/header_file.m',
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin/another_header_file.m'
+                )
+            end
+        end
+
+        it 'should include .swift files of cordova plugins' do
+            mk_dir_tree({
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin': { 'header_file.swift': '' },
+                '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin': { 'another_header_file.swift': '' }
+            })
+
+            project = CocoaPodsCordovaPlugins::CordovaProject.new('/cordova_project_dir')
+            plugin_sources = project.list_native_sources
+
+            aggregate_failures 'resulting dirs list' do
+                expect(plugin_sources.count).to eq(2)
+                expect(plugin_sources).to include(
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/cordova-plugin/header_file.swift',
+                    '/cordova_project_dir/platforms/ios/HelloCordova/Plugins/another-cordova-plugin/another_header_file.swift'
+                )
+            end
         end
     end
 end

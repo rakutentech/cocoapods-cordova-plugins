@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'cordova_project/project_creator'
 require 'fs_helper'
 
@@ -9,21 +10,22 @@ RSpec.describe CocoaPodsCordovaPlugins::ProjectCreator do
     context '#create' do
         before(:each) do
             allow(CocoaPodsCordovaPlugins::FSHelper).to receive_messages(
-                :cd => nil,
                 :recreate_dir => nil
             )
+
+            allow(Dir).to receive(:chdir).and_yield()
         end
 
         it 'should recreate cordova project dir' do
-            expect(CocoaPodsCordovaPlugins::FSHelper).to receive(:recreate_dir).with('cordova_project_dir')
+            expect(CocoaPodsCordovaPlugins::FSHelper).to receive(:recreate_dir).with('/build_dir/cordova_proj')
 
-            CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, 'cordova_project_dir').create
+            CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, '/build_dir').create
         end
 
         it 'should cd to cordova project dir' do
-            expect(CocoaPodsCordovaPlugins::FSHelper).to receive(:cd).with('cordova_project_dir')
+            expect(Dir).to receive(:chdir).with('/build_dir/cordova_proj')
 
-            CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, 'cordova_project_dir').create
+            CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, '/build_dir').create
         end
 
         it 'should create cordova project' do
@@ -73,12 +75,6 @@ RSpec.describe CocoaPodsCordovaPlugins::ProjectCreator do
 
         it 'should prepare cordova project for copying' do
             expect(Kernel).to receive(:system).with('cordova', 'prepare')
-
-            CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, 'default_dir').create
-        end
-
-        it 'should cd back to the root dir' do
-            expect(CocoaPodsCordovaPlugins::FSHelper).to receive(:cd).with('..')
 
             CocoaPodsCordovaPlugins::ProjectCreator.new({:plugins => []}, 'default_dir').create
         end

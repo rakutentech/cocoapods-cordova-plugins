@@ -1,4 +1,5 @@
 require 'cocoapods-core'
+require 'cordova_project/cordova_project'
 
 module CocoaPodsCordovaPlugins
     class PodsInjector
@@ -8,8 +9,8 @@ module CocoaPodsCordovaPlugins
             @project_podfile = project_podfile
         end
 
-        def inject(cordova_podfile_path)
-            cordova_podfile = Pod::Podfile.from_file(cordova_podfile_path)
+        def inject(cordova_project)
+            cordova_podfile = Pod::Podfile.from_file(cordova_project.podfile_path)
 
             puts 'Before:'
             puts @project_podfile.to_hash

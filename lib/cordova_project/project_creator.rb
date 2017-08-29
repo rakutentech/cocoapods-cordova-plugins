@@ -1,28 +1,33 @@
 require 'fs_helper'
+require 'cordova_project/cordova_project'
+
+CORDOVA_PROJECT_DIR = 'cordova_proj'
 
 module CocoaPodsCordovaPlugins
     class ProjectCreator
-        def initialize(config, project_dir)
+        def initialize(config, build_dir)
             raise ArgumentError, 'Missing config' unless config
             raise ArgumentError, 'Missing plugins declaration' unless config[:plugins]
-            raise ArgumentError, 'Missing project dir' unless project_dir
+            raise ArgumentError, 'Missing build dir' unless build_dir
 
             @config = config
-            @project_dir = project_dir
+            @build_dir = build_dir
 
             @fs_helper = CocoaPodsCordovaPlugins::FSHelper
         end
 
         def create
-            @fs_helper.recreate_dir(@project_dir)
-            @fs_helper.cd(@project_dir)
+            build_path = File.join(@build_dir, CORDOVA_PROJECT_DIR)
+            @fs_helper.recreate_dir(build_path)
 
-            create_cordova_project
-            add_ios_platform
-            add_plugins
-            prepare_cordova_project
+            Dir.chdir(build_path) do
+                create_cordova_project
+                add_ios_platform
+                add_plugins
+                prepare_cordova_project
+            end
 
-            @fs_helper.cd('..')
+            return CocoaPodsCordovaPlugins::CordovaProject.new(build_path)
         end
 
         private

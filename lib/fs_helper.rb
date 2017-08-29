@@ -3,10 +3,6 @@ require 'fileutils'
 module CocoaPodsCordovaPlugins
     module FSHelper
         class << self
-            def cd(path)
-                FileUtils.chdir(path)
-            end
-
             def recreate_dir(dir)
                 FileUtils.rm_r(dir, :force => true)
                 FileUtils.mkpath(dir)

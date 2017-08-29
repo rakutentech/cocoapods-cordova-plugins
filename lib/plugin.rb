@@ -1,7 +1,8 @@
 require 'cocoapods-core'
 require 'fs_helper'
-require 'cordova_project/cordova_project'
+require 'cordova_project/project_creator'
 require 'pods_injector'
+require 'utils'
 
 BUILD_DIR = '.build'
 
@@ -12,21 +13,18 @@ module CocoaPodsCordovaPlugins
         end
 
         def on_pre_install(podfile, options)
-            fs_helper = CocoaPodsCordovaPlugins::FSHelper
-            cordova_project = CocoaPodsCordovaPlugins::CordovaProject.new(options, File.join(Dir.pwd, BUILD_DIR))
-            deps_injector = CocoaPodsCordovaPlugins::PodsInjector.new(podfile)
-
-            unless cordova_project.isCordovaInstalled
+            unless CocoaPodsCordovaPlugins.is_cordova_installed
                 raise Pod::Informative, 'Cordova is missing on the machine. Please install cordova via `npm i -g cordova`'
             end
 
-            fs_helper.recreate_dir BUILD_DIR
-            fs_helper.cd BUILD_DIR
+            build_dir = File.join(Dir.pwd, BUILD_DIR)
+            CocoaPodsCordovaPlugins::FSHelper.recreate_dir build_dir
 
-            cordova_project.create
-            deps_injector.inject(cordova_project.podfile_path)
+            project_creator = CocoaPodsCordovaPlugins::ProjectCreator.new(options, build_dir)
+            cordova_project = project_creator.create
 
-            fs_helper.cd '..'
+            pods_injector = CocoaPodsCordovaPlugins::PodsInjector.new(podfile)
+            pods_injector.inject cordova_project
         end
     end
 end

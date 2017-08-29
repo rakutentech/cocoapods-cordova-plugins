@@ -17,6 +17,7 @@
 # Because fakefs collides with pp, need to make sure that it was required before fakefs
 # More here: https://github.com/fakefs/fakefs#fakefs-----typeerror-superclass-mismatch-for-class-file
 require 'pp'
+require 'spec_utils'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -48,6 +49,9 @@ RSpec.configure do |config|
   # inherited by the metadata hash of host groups and examples, rather than
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  # including helpers
+  config.include SpecUtils
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.

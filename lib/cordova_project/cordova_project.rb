@@ -1,36 +1,23 @@
-require 'cordova_project/project_creator'
 require 'fs_helper'
-
-CORDOVA_PROJECT_DIR = 'cordova_proj'
 
 module CocoaPodsCordovaPlugins
     class CordovaProject
-        def initialize(config, build_dir_path)
-            raise ArgumentError, 'Missing config' unless config
-            raise ArgumentError, 'Missing build dir path' unless build_dir_path
+        def initialize(cordova_project_dir)
+            raise ArgumentError, 'Missing build dir path' unless cordova_project_dir
 
-            @project_creator = CocoaPodsCordovaPlugins::ProjectCreator.new(config, CORDOVA_PROJECT_DIR)
-            @build_dir_path = build_dir_path
-        end
-
-        def isCordovaInstalled
-            return Kernel.system('cordova', '--version')
-        end
-
-        def create
-            @project_creator.create
+            @cordova_project_dir = cordova_project_dir
         end
 
         def podfile_path
-            return File.join(@build_dir_path, CORDOVA_PROJECT_DIR, 'platforms', 'ios', 'Podfile')
+            return File.join(@cordova_project_dir, 'platforms', 'ios', 'Podfile')
         end
 
         def list_native_sources
-            path_to_plugins = File.join(@build_dir_path,
-                CORDOVA_PROJECT_DIR,
+            path_to_plugins = File.join(
+                @cordova_project_dir,
                 'platforms',
                 'ios',
-                'HelloCordova',
+                'HelloCordova', # default name of generated iOS project
                 'Plugins'
             )
 

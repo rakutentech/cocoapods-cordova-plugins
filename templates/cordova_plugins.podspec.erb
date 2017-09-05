@@ -1,0 +1,21 @@
+Pod::Spec.new do |s|
+    s.name = "CordovaPlugins"
+    s.version = "1.0.0"
+    s.summary = "Injected podspec used by CocoaPods-Cordova-Plugins plugin."
+    s.description = "This is intended to be used as an injected podspec template \n used by the CocoaPods-Cordova-Plugins.\n\n It should *not* be referenced outside of that context. \n"
+    s.homepage = "https://example.com"
+    s.license = {:type => "MIT", :file => "LICENSE.txt"}
+    s.authors = {"Ilia Isupov": "ilia.isupov@gmail.com"}
+    s.source_files = "source/**/*.{h,m,swift}"
+    s.source = { :http => 'https://example.com'}
+    s.resources = "resources/*"
+    s.requires_arc = true
+    s.weak_frameworks = [
+#        <% @frameworks.each do |framework|%>
+#        "<%=framework%>",
+#        <% end %>
+    ]
+    <% @dependencies.each do |dependency| %>
+    s.dependency '<%=dependency[:name]%>'<%if dependency[:requirement]%>, '<%=dependency[:requirement]%>'<%end%>
+    <% end %>
+end

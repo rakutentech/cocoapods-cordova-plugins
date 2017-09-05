@@ -1,4 +1,5 @@
 require 'fs_helper'
+require 'podfile_parser'
 
 module CocoaPodsCordovaPlugins
     class CordovaProject
@@ -8,8 +9,8 @@ module CocoaPodsCordovaPlugins
             @cordova_project_dir = cordova_project_dir
         end
 
-        def podfile_path
-            return File.join(@cordova_project_dir, 'platforms', 'ios', 'Podfile')
+        def podfile
+            return CocoaPodsCordovaPlugins::PodfileParser.new(File.join(@cordova_project_dir, 'platforms', 'ios', 'Podfile'))
         end
 
         def list_native_sources
@@ -28,7 +29,19 @@ module CocoaPodsCordovaPlugins
             end.flatten
         end
 
-        def list_framewords
+        def list_js_sources
+            return [
+                File.join(@cordova_project_dir, 'platforms', 'ios', 'www', 'cordova_plugins.js'),
+                File.join(@cordova_project_dir, 'platforms', 'ios', 'www', 'plugins'),
+            ]
+        end
+
+        def list_resources
+
+        end
+
+        def list_frameworks
+            []
         end
     end
 end

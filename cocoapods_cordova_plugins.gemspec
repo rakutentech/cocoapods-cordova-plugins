@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = ''
   s.license     = 'MIT'
 
-  s.files       = Dir['lib/**/*.rb']
+  s.files       = Dir['lib/**/*.rb', 'templates/*']
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'cocoapods', '~> 1.2'

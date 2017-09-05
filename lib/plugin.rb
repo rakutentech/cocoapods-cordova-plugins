@@ -1,7 +1,8 @@
 require 'cocoapods-core'
 require 'fs_helper'
 require 'cordova_project/project_creator'
-require 'pods_injector'
+require 'podspec_injector'
+require 'pod_constructor'
 require 'utils'
 
 BUILD_DIR = '.build'
@@ -23,8 +24,15 @@ module CocoaPodsCordovaPlugins
             project_creator = CocoaPodsCordovaPlugins::ProjectCreator.new(options, build_dir)
             cordova_project = project_creator.create
 
-            pods_injector = CocoaPodsCordovaPlugins::PodsInjector.new(podfile)
-            pods_injector.inject cordova_project
+            # build_dir = '/Users/ilia.isupov/Documents/prototypes/cocoapods-cordova-plugins/.build'
+            # cordova_project = CocoaPodsCordovaPlugins::CordovaProject.new('/Users/ilia.isupov/Documents/prototypes/cocoapods-cordova-plugins/.build/cordova_proj')
+
+            podspec_constructor = CocoaPodsCordovaPlugins::PodConstructor.new(cordova_project, build_dir)
+            temp_podspec_path = podspec_constructor.construct_pod
+
+            pods_injector = CocoaPodsCordovaPlugins::PodspecInjector.new(podfile)
+            pods_injector.inject_pods_sources cordova_project
+            pods_injector.inject_temp_podspec temp_podspec_path
         end
     end
 end

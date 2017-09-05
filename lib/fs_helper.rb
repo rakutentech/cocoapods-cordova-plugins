@@ -8,16 +8,21 @@ module CocoaPodsCordovaPlugins
                 FileUtils.mkpath(dir)
             end
 
-            def list_dirs(dir)
-                dirnames = Dir.entries(dir).select {|entry| File.directory? File.join(dir, entry) and !(entry =='.' || entry == '..')}
-
-                dirnames.map {|entry| File.join(dir, entry)}
+            def list_dirs(dir, pattern = //)
+                list_entries(dir, :directory?, pattern)
             end
 
-            def list_files(dir, pattern)
-                files =  Dir.entries(dir).select { |entry| File.file? File.join(dir, entry) and pattern.match(entry) }
+            def list_files(dir, pattern = //)
+                list_entries(dir, :file?, pattern)
+            end
 
-                files.map {|entry| File.join(dir, entry)}
+            private
+            def list_entries(dir, selector, pattern)
+                entries = Dir.entries(dir).select do |entry|
+                    File.send(selector, File.join(dir, entry)) and pattern.match(entry) and !(entry == '.' || entry == '..')
+                end
+
+                entries.map {|entry| File.join(dir, entry)}
             end
         end
     end

@@ -44,6 +44,8 @@ module CocoaPodsCordovaPlugins
             sources_dir = File.join(@podspec_dir, RESOURCES_DIR, 'www')
             CocoaPodsCordovaPlugins::FSHelper.recreate_dir(sources_dir)
 
+            puts @project.list_js_sources
+
             @project.list_js_sources.each do |source_path|
                 dest_path = File.join(sources_dir, File.basename(source_path))
 

@@ -30,10 +30,13 @@ module CocoaPodsCordovaPlugins
         end
 
         def list_js_sources
+            js_sources_path = File.join(@cordova_project_dir, 'platforms', 'ios', 'www')
+
             return [
-                File.join(@cordova_project_dir, 'platforms', 'ios', 'www', 'cordova_plugins.js'),
-                File.join(@cordova_project_dir, 'platforms', 'ios', 'www', 'plugins'),
-            ]
+                CocoaPodsCordovaPlugins::FSHelper.list_files(js_sources_path, /.js$/),
+                File.join(js_sources_path, 'plugins'),
+                File.join(js_sources_path, 'cordova-js-src')
+            ].flatten
         end
 
         def list_resources

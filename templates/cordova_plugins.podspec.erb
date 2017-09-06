@@ -11,9 +11,9 @@ Pod::Spec.new do |s|
     s.resources = "resources/*"
     s.requires_arc = true
     s.weak_frameworks = [
-#        <% @frameworks.each do |framework|%>
-#        "<%=framework%>",
-#        <% end %>
+        <% @frameworks.each do |framework| %>
+            "<%=framework%>",
+        <% end %>
     ]
     <% @dependencies.each do |dependency| %>
     s.dependency '<%=dependency[:name]%>'<%if dependency[:requirement]%>, '<%=dependency[:requirement]%>'<%end%>

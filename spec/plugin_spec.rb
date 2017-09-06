@@ -47,11 +47,7 @@ RSpec.describe CocoaPodsCordovaPlugins, 'blabla' do
         # # project = Xcodeproj::Project.open('/Users/ilia.isupov/Documents/prototypes/cocoapods-cordova-plugins/tmp_build/platforms/ios/HelloCordova.xcodeproj')
         # project = Xcodeproj::Project.open('/Users/ilia.isupov/Documents/cordova-plugins/cordova-plugin-rakuten-pnp/src/ios/Tests.xcodeproj')
         #
-        # project.native_targets.each do |target|
-        #     target.frameworks_build_phase.files.each do |file|
-        #         puts file.file_ref.name
-        #     end
-        # end
+        
         #
         #
         #

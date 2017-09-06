@@ -57,7 +57,7 @@ module CocoaPodsCordovaPlugins
             command += '@' + version if version
             command += ' ' + build_plugin_params(params) if params
 
-            return command
+            return command + ' --save'
         end
 
         def build_plugin_params(pluginParams)

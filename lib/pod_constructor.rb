@@ -22,6 +22,7 @@ module CocoaPodsCordovaPlugins
 
             copy_native_sources
             copy_js_sources
+            copy_resources
 
             podspec = construct_podspec
 
@@ -41,10 +42,8 @@ module CocoaPodsCordovaPlugins
         end
 
         def copy_js_sources
-            sources_dir = File.join(@podspec_dir, RESOURCES_DIR, 'www')
+            sources_dir = File.join(@podspec_dir, RESOURCES_DIR, 'js')
             CocoaPodsCordovaPlugins::FSHelper.recreate_dir(sources_dir)
-
-            puts @project.list_js_sources
 
             @project.list_js_sources.each do |source_path|
                 dest_path = File.join(sources_dir, File.basename(source_path))
@@ -54,7 +53,17 @@ module CocoaPodsCordovaPlugins
         end
 
         def copy_resources
+            sources_dir = File.join(@podspec_dir, RESOURCES_DIR, 'res')
+            CocoaPodsCordovaPlugins::FSHelper.recreate_dir(sources_dir)
 
+            resources = @project.list_resources
+            resources << @project.cordova_config_file
+
+            resources.each do |resource_path|
+                dest_path = File.join(sources_dir, File.basename(resource_path))
+
+                FileUtils.copy_entry resource_path, dest_path
+            end
         end
 
         def construct_podspec
@@ -82,6 +91,8 @@ module CocoaPodsCordovaPlugins
 
                 ERB.new(podspec_template, nil, '-').result(binding)
             end
+
+            attr_accessor :frameworks, :dependencies
         end
     end
 end

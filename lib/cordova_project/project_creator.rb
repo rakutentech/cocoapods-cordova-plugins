@@ -23,6 +23,7 @@ module CocoaPodsCordovaPlugins
             Dir.chdir(build_path) do
                 create_cordova_project
                 add_ios_platform
+                configure_plugins_registry
                 add_plugins
                 prepare_cordova_project
             end
@@ -38,6 +39,10 @@ module CocoaPodsCordovaPlugins
 
         def add_ios_platform
             Kernel.system('cordova', 'platform', 'add', 'ios')
+        end
+
+        def configure_plugins_registry
+            File.open('.npmrc', 'w') {|f| f.write("registry=#{@config[:registry]}")} if @config[:registry]
         end
 
         def add_plugins

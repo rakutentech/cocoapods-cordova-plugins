@@ -47,13 +47,14 @@ RSpec.describe CocoaPodsCordovaPlugins, 'blabla' do
         # # project = Xcodeproj::Project.open('/Users/ilia.isupov/Documents/prototypes/cocoapods-cordova-plugins/tmp_build/platforms/ios/HelloCordova.xcodeproj')
         # project = Xcodeproj::Project.open('/Users/ilia.isupov/Documents/cordova-plugins/cordova-plugin-rakuten-pnp/src/ios/Tests.xcodeproj')
         #
-        
+
         #
         #
         #
         #
         project_podfile = Pod::Podfile.from_file('/Users/ilia.isupov/Documents/cordova-plugins/cordova-plugin-rakuten-pnp/src/ios/Podfile')
         CocoaPodsCordovaPlugins.on_pre_install(project_podfile, {
+            :registry => 'https://registry.rakuten.appstudio.monaca.mobi',
             :plugins => [
                 {
                     :name => 'cordova-plugin-rakuten-discover',

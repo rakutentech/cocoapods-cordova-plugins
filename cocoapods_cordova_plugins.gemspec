@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.date        = '2017-08-08'
   s.summary     = "Add cordova dependencies to existing iOS project"
   s.description = "Add cordova dependencies to existing iOS project"
-  s.authors     = ["Isupov Il'ya"]
-  s.email       = 'ilia.isupov@rakuten.com'
+  s.authors     = ["Isupov Ilya"]
+  s.email       = 'ilia.isupov@gmail.com'
   s.homepage    = ''
   s.license     = 'MIT'
 

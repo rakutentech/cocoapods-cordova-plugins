@@ -7,4 +7,5 @@ install
 npm-debug.log
 
 .build/
+bin/
 *.gem

@@ -80,32 +80,3 @@ RSpec.describe CocoaPodsCordovaPlugins::ProjectCreator do
         end
     end
 end
-
-# RSpec.describe CocoaPodsCordovaPlugins do
-#     it 'bla' do
-#         CocoaPodsCordovaPlugins::ProjectCreator.new({
-#             :plugins => [
-#                 {
-#                     :name => 'cordova-plugin-rakuten-discover',
-#                     :version => '0.0.4',
-#                     :params => {
-#                         'IOS_APP_NAME' => 'qa_app_ios',
-#                         'IOS_APP_REVISION' => '1',
-#                         'IOS_SERVICE_ID' => 'remdemoapp',
-#                         'IOS_SUBSCRIPTION_KEY' => '55d9ef39564c4a0bbc34daecaf8823e4',
-#                         'STAGING' => 'false'
-#                     }
-#                 },
-#                 {
-#                     :name => 'cordova-plugin-rakuten-auth',
-#                     :version => '0.0.1',
-#                     :params => {
-#                         'CLIENT_ID' => 'rmsdk_qa',
-#                         'CLIENT_SECRET' => 'h5RdcGQVwlHB15K3jI3k8pfLkvkUjnc7brDVY0w1FU1v',
-#                         'SCOPES' => '90days@Access,90days@Refresh,idinfo_read_encrypted_easyid,idinfo_read_openid,memberinfo_read_basic,memberinfo_read_name,memberinfo_read_point,memberinfo_read_rank,memberinfo_read_pointsummary,memberinfo_read_info,memberinfo_read_details,memberinfo_read_address,memberinfo_read_telephone,memberinfo_read_mail,gecp_point_read'
-#                     }
-#                 }
-#             ]
-#         }).create
-#     end
-# end
